@@ -84,7 +84,17 @@ public class ControllerScript : MonoBehaviour
 		Renderer objR = newObj.GetComponent<Renderer> ();
 
 		// *** student code to finish this function goes here
+		GameObject platform = GameObject.Find("PlatformQuad");
+		Renderer platformR = platform.GetComponent<Renderer> ();
+		float platformTopY = platformR.bounds.max.y;
+		float x = (worldWidth / 2.0F) + objR.bounds.size.x;
+		
+		float maxY = (worldHeight / 2.0F) - (objR.bounds.size.y / 2.0f);
+		float minY = platformTopY + (objR.bounds.size.y / 2.0f);
 
+		// get new random Y position between minY and maxY
+		float y = Random.Range (minY, maxY);
+		newObj.transform.position = new Vector3 (x, y, 0);
 
 		// send back reference to calling function
 		return newObj;  
@@ -123,6 +133,13 @@ public class ControllerScript : MonoBehaviour
 
 		// *** student code to finish this function goes here
 		// for each object
+		foreach (var obj in objects)
+		{
+			obj.transform.Translate(-xChange,0,0);
+			Renderer r = obj.GetComponent<Renderer>();
+			if (obj.transform.position.x < (xLeftBoundary-r.bounds.size.x))
+				Destroy(obj);
+		}
 
 	}
 
