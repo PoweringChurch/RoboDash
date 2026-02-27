@@ -34,7 +34,8 @@ public class RobotScript : MonoBehaviour
 
     // reference to this object's Rigidbody2D
     private Rigidbody2D rb;
-
+	// reference to this object's animator
+	private Animator robotAnim;
 	// Use this for initialization
 	void Start () 
 	{
@@ -49,6 +50,7 @@ public class RobotScript : MonoBehaviour
 
 		// get this object's Rigidbody2D and store for future use
 		rb = GetComponent<Rigidbody2D>();
+		robotAnim = GetComponent<Animator>();
 
 		// get this sprite renderer 
 		Renderer r = GetComponent<Renderer> ();
@@ -82,6 +84,7 @@ public class RobotScript : MonoBehaviour
 			bool jumpClicked = InputSystem.actions.FindAction("Jump").WasPressedThisFrame();
 			if (jumpClicked) 
 			{
+				robotAnim.SetInteger("state", 1);
 				// add upwards force and reduce # of remaining jumps
 				rb.AddForce (new Vector2 (0, jumpForce));
 				numJumps--; 
@@ -95,6 +98,7 @@ public class RobotScript : MonoBehaviour
             bool fireClicked = InputSystem.actions.FindAction("Attack").WasPressedThisFrame();
             if (fireClicked) 
 			{
+				robotAnim.SetTrigger("shooting");
 				fireShot (); // shoot!
 			}
 		}
@@ -133,6 +137,9 @@ public class RobotScript : MonoBehaviour
 			// reset the available number of jumps each time
 			// the player touches the platform
 			numJumps = 3;
+			robotAnim.SetInteger(
+				"state", 0
+			);
 		}
 	}
 
@@ -151,6 +158,7 @@ public class RobotScript : MonoBehaviour
 		else if (otherObject.gameObject.CompareTag ("monster")) 
 		{
 			// call GameOver() on the controller script
+			robotAnim.SetInteger("state",2);
 			controller.GameOver ();
 		}
 	}
